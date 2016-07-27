@@ -12,7 +12,7 @@ app.get('/', function(req, res) {
 });
 
 app.post('/git-push-hook', function(req, res) {
-	res.send('heres your body back:\n' + req.body);
+	res.send('heres your body back:\n' + JSON.stringify(req.body));
 });
 
 app.listen(app.get('port'), function() {
