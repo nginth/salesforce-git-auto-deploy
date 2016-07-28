@@ -1,14 +1,16 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var path = require('path');
 var app = express();
 
 app.set('port', (process.env.PORT || 5000));
+app.set('views', path.join(__dirname, 'templates'));
+app.set('view engine', 'pug');
 
-//middlewares
 app.use(bodyParser.json());
 
 app.get('/', function(req, res) {
-	res.send('Hello world!');
+	res.render('index');
 });
 
 app.post('/git-push-hook', function(req, res) {
