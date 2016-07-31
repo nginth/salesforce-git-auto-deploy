@@ -8,6 +8,14 @@ app.set('port', (process.env.PORT || 5000));
 app.set('views', path.join(__dirname, 'templates'));
 app.set('view engine', 'pug');
 
+app.use(function(req, res, next){
+    req.rawBody = '';
+    req.on('data', function(buf){
+        req.rawBody += buf;
+    });
+    next();
+});
+
 app.use(bodyParser.json());
 
 app.get('/', function(req, res) {
@@ -23,7 +31,7 @@ app.post('/git-push-hook', function(req, res) {
                             .update(req.rawBody)
                             .digest('hex');
         if ('sha1=' + envSignature === reqSignature) {
-            res.send('heres your body back:\n' + JSON.stringify(req.body));
+            res.send('heres your body back:\n' + JSON.stringify(req.rawBody));
         }
         else badRequest = true;    
     }
