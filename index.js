@@ -17,7 +17,7 @@ app.get('/', function(req, res) {
 app.post('/git-push-hook', function(req, res) {
 	var badRequest = false;
     var reqSignature = req.headers['x-hub-signature'];
-    if (hash) {
+    if (reqSignature) {
         var envSignature = crypto
                             .createHmac('sha1', process.env.GHWH_SECRET)
                             .update(req.rawBody)
