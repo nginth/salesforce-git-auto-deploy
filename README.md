@@ -11,3 +11,9 @@ Automatically deploy to a certain salesforce org when you push to a repo.
 - [ ] Push new files to salesforce org
 - [ ] Delete deleted files from salesforce org (is this possible?)
 - [ ] Post to a callback url when job finished
+
+### Documentation (WIP)
+
+#### Config
+
+`GHWH_SECRET` - the github webhook secret (see [https://developer.github.com/webhooks/securing/](https://developer.github.com/webhooks/securing/))
