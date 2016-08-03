@@ -16,4 +16,11 @@ Automatically deploy to a certain salesforce org when you push to a repo.
 
 #### Config
 
-`GHWH_SECRET` - the github webhook secret (see [https://developer.github.com/webhooks/securing/](https://developer.github.com/webhooks/securing/))
+You'll need a config.yml file in the root directory (of this project) configured like so:
+
+```
+ghsecret: <secret>
+username: foo@bar.com
+password: waycoolpassword
+loginUrl: (https://login.salesforce.com | https://test.salesforce.com) 
+```
