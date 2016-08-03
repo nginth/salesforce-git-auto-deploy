@@ -5,8 +5,8 @@ Automatically deploy to a certain salesforce org when you push to a repo.
 ### Todo:
 - [x] Recieve push payload
 - [x] Validate secret
-- [ ] Parse response
-- [ ] Get salesforce user/pass from environment
+- [x] Parse response
+- [x] Get salesforce user/pass from ~~environment~~ yaml config file
 - [ ] Push modified files to salesforce org
 - [ ] Push new files to salesforce org
 - [ ] Delete deleted files from salesforce org (is this possible?)
