@@ -28,7 +28,6 @@ app.post('/git-push-hook', function (req, res) {
     salesforce.upload();
     var badRequest = false;
     var reqSignature = req.headers['x-hub-signature'];
-    console.log('ghsecret:' + config.ghsecret);
     if (reqSignature) {
         var secret = process.env.GHWH_SECRET;
         console.log(secret);
