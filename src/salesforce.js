@@ -4,13 +4,15 @@ var SalesforceManager = function() {};
 
 SalesforceManager.prototype.upload = function(options, callback) {
     var conn = new jsforce.Connection({
-        loginUrl: config.loginUrl
+        loginUrl: (config.loginUrl || process.env.SALESFORCE_LOGINURL)
     });
-    conn.login(config.username, config.password, function(err, data) {
+    var username = (config.username || process.env.SALESFORCE_USER);
+    var password = (config.password || process.env.SALESFORCE_PASS);
+    conn.login(username, password, function(err, data) {
         if (err) return console.log(err);
         //console.log(data.url);
     });
-    
+
 }
 
 module.exports = new SalesforceManager();

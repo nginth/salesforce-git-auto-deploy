@@ -33,6 +33,7 @@ app.post('/git-push-hook', function (req, res) {
     console.log('ghsecret:' + config.ghsecret);
     if (reqSignature) {
         var secret = (config.ghsecret || process.env.GHWH_SECRET);
+        console.log(secret);
         var envSignature = crypto
             .createHmac('sha1', new Buffer(secret))
             .update(req.rawBody)
