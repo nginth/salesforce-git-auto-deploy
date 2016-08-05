@@ -28,3 +28,5 @@ username: foo@bar.com
 password: waycoolpassword
 loginUrl: (https://login.salesforce.com | https://test.salesforce.com) 
 ```
+
+You can (if you really, really want to) set your secret as an environment variable. This environment variable is `GHWH_SECRET` which stands for **GitHub WebHook Secret**.
