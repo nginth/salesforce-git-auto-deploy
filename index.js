@@ -25,7 +25,6 @@ app.get('/', function (ignore, res) {
 });
 
 app.post('/git-push-hook', function (req, res) {
-    salesforce.upload();
     var badRequest = false;
     var reqSignature = req.headers['x-hub-signature'];
     if (reqSignature) {
@@ -36,7 +35,8 @@ app.post('/git-push-hook', function (req, res) {
             .update(req.rawBody)
             .digest('hex');
         if ('sha1=' + envSignature === reqSignature) {
-            var commits = res.commits;
+            console.log(req.body);
+            var commits = res.body.commits;
             var i;
             console.log('commits added:')
             for (i = 0; i < commits.length; i += 1) {
