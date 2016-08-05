@@ -20,13 +20,12 @@ Salesforce attempts to have a native (and proprietary) solution to everything, b
 
 #### Config
 
-You'll need a config.yml file in the root directory (of this project) configured like so:
+You'll need to set the following environment variables:
 
 ```
-ghsecret: <secret>
-username: foo@bar.com
-password: waycoolpassword
-loginUrl: (https://login.salesforce.com | https://test.salesforce.com) 
+GHWH_SECRET: <secret>
+SALESFORCE_USER: foo@bar.com
+SALESFORCE_PASS: waycoolpassword
+SALESFORCE_LOGINURL: (https://login.salesforce.com | https://test.salesforce.com) 
 ```
 
-You can (if you really, really want to) set your secret as an environment variable. This environment variable is `GHWH_SECRET` which stands for **GitHub WebHook Secret**.

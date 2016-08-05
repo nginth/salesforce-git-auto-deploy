@@ -4,8 +4,6 @@ var path = require('path');
 var crypto = require('crypto');
 var salesforce = require('./src/salesforce.js');
 
-var config = require('yamljs').load('./config.yml');
-
 var app = express();
 
 app.set('port', (process.env.PORT || 5000));
@@ -32,7 +30,7 @@ app.post('/git-push-hook', function (req, res) {
     var reqSignature = req.headers['x-hub-signature'];
     console.log('ghsecret:' + config.ghsecret);
     if (reqSignature) {
-        var secret = (config.ghsecret || process.env.GHWH_SECRET);
+        var secret = process.env.GHWH_SECRET;
         console.log(secret);
         var envSignature = crypto
             .createHmac('sha1', new Buffer(secret))
@@ -45,7 +43,7 @@ app.post('/git-push-hook', function (req, res) {
             for (i = 0; i < commits.length; i += 1) {
                 console.log(commits[i].added);
             }
-            
+
             res.send('heres your body back:\n' + JSON.stringify(req.rawBody));
         } else {
             badRequest = true;
