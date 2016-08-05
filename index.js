@@ -41,9 +41,11 @@ app.post('/git-push-hook', function (req, res) {
         if ('sha1=' + envSignature === reqSignature) {
             var commits = res.commits;
             var i;
+            conosle.log('commits added:')
             for (i = 0; i < commits.length; i += 1) {
-                console.log(commits.added);
+                console.log(commits[i].added);
             }
+            
             res.send('heres your body back:\n' + JSON.stringify(req.rawBody));
         } else {
             badRequest = true;
