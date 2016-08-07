@@ -29,3 +29,29 @@ SALESFORCE_PASS: waycoolpassword
 SALESFORCE_LOGINURL: (https://login.salesforce.com | https://test.salesforce.com) 
 ```
 
+Your github directory structure **must** comply to the mavensmate sublime text plugin structure. Which is to say it should look like: 
+
+```
+project
+|   README.md
+|
+└───src
+    │
+    ├───classes
+    │   │   ExampleApexClass1.cls
+    │   │   ExampleApexClass2.cls
+    │   │   ...
+    │
+    └───pages
+    │   ExampleVisualForcePage.page
+    │   ExampleVisualForcePage.page
+```
+
+Directory names:
+- classes - Apex files
+- pages - Visualforce files
+- components - Visualforce components
+- objects - Custom objects
+
+(TODO: there are more but I can't remember them at the moment)
+
