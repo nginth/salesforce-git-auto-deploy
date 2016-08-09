@@ -10,9 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.4.1",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
+    "github": "^2.4.0",
     "jsforce": "^1.7.0",
-    "pug": "^2.0.0-beta4"
+    "jszip": "^3.1.0",
+    "pug": "^2.0.0-beta4",
+    "through2": "^2.0.1",
+    "xml": "^1.0.1"
   }
 }

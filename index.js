@@ -1,3 +1,4 @@
+'use strict';
 var express = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
@@ -25,33 +26,23 @@ app.get('/', function (ignore, res) {
 });
 
 app.post('/git-push-hook', function (req, res) {
-    res.send(req.body);
-    var badRequest = false;
-    var reqSignature = req.headers['x-hub-signature'];
+    let badRequest = false;
+    let reqSignature = req.headers['x-hub-signature'];
     if (reqSignature) {
-        var secret = process.env.GHWH_SECRET;
-        console.log(secret);
-        var envSignature = crypto
+        let secret = process.env.GHWH_SECRET;
+        let envSignature = crypto
             .createHmac('sha1', new Buffer(secret))
             .update(req.rawBody)
             .digest('hex');
-        if ('sha1=' + envSignature === reqSignature) {
-            var commits = res.body.commits;
-            var i;
-            console.log('commits added:')
-            for (i = 0; i < commits.length; i += 1) {
-                console.log(commits[i].added);
-            }
-
-            res.send('heres your body back:\n' + JSON.stringify(req.rawBody));
+        if ('sha1=' + envSignature === reqSignature || process.env.IGNORE_SECRET) {
+            salesforce.deploy(req.body, function(err, result) {
+                if (err) return res.status('500').send(err);
+                res.send(result);
+            });
         } else {
-            badRequest = true;
+            res.status('403').send('Unauthorized');
         }
     } else {
-        badRequest = true;
-    }
-
-    if (badRequest) {
         res.status('400').send('Bad Request');
     }
 });

@@ -1,3 +1,7 @@
 node_modules/
 test
 config.yml
+env.sh
+deploy.zip
+.DS_Store
+src/.DS_Store

@@ -10,10 +10,10 @@ Salesforce attempts to have a native (and proprietary) solution to everything, b
 - [x] Recieve push payload
 - [x] Validate secret
 - [x] Parse response
-- [x] Get salesforce user/pass from ~~environment~~ yaml config file
+- [x] Get salesforce user/pass from ~~environment~~ ~~yaml config file~~ environment again
 - [ ] Push modified files to salesforce org
 - [ ] Push new files to salesforce org
-- [ ] Delete deleted files from salesforce org (is this possible?)
+- [ ] Delete deleted files from salesforce org ~~(is this possible?)~~ (yes it is)
 - [ ] Post to a callback url when job finished
 
 ### Documentation (WIP)
@@ -28,30 +28,4 @@ SALESFORCE_USER: foo@bar.com
 SALESFORCE_PASS: waycoolpassword
 SALESFORCE_LOGINURL: (https://login.salesforce.com | https://test.salesforce.com) 
 ```
-
-Your github directory structure **must** comply to the mavensmate sublime text plugin structure. Which is to say it should look like: 
-
-```
-project
-|   README.md
-|
-└───src
-    │
-    ├───classes
-    │   │   ExampleApexClass1.cls
-    │   │   ExampleApexClass2.cls
-    │   │   ...
-    │
-    └───pages
-    │   ExampleVisualForcePage.page
-    │   ExampleVisualForcePage.page
-```
-
-Directory names:
-- classes - Apex files
-- pages - Visualforce files
-- components - Visualforce components
-- objects - Custom objects
-
-(TODO: there are more but I can't remember them at the moment)
 
