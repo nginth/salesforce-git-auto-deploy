@@ -32,16 +32,17 @@ SalesforceDeployer.prototype.deploy = function(ghData, callback) {
     }).then(function() {
         console.log(contents);
         let zip = new JSZip();
+        let zipUnpack = zip.folder('unpackaged');
         contents.forEach(function (file) {
-            zip
+            zipUnpack
             .folder('classes')
             .file(file.name, file.data)
             .file(file.name + '-meta.xml', createMetadataXml(file));
         });
-        zip.file('package.xml', createPackageXml());
+        zipUnpack.file('package.xml', createPackageXml());
         zip
-        .generateNodeStream({type: 'nodebuffer', streamFiles: true})
-        .pipe(fs.createWriteStream('deploy.zip'))
+        .generateNodeStream({type: 'nodebuffer'})
+        .pipe(fs.createWriteStream('deploy.zip', {defaultEncoding: 'binary'}))
         .on('finish', function () {
             deployToSalesforce(callback);
         });
@@ -54,13 +55,7 @@ function deployToSalesforce(callback) {
     });
     const username = process.env.SALESFORCE_USER;
     const password = process.env.SALESFORCE_PASS;
-    let zipStream = 
-        fs
-        .createReadStream('deploy.zip')
-        .pipe(through(function (chunk, _, next) {
-            this.push(new Buffer(chunk).toString('base64'));
-            next();
-        }));
+    let zipStream = fs.createReadStream('deploy.zip');
 
     conn
     .login(username, password)
@@ -72,9 +67,10 @@ function deployToSalesforce(callback) {
                 console.log(err);
                 callback(err);
             }
+            console.log(JSON.stringify(result));
             console.log(result.done);
             console.log('numberComponentsDeployed: ' + result.numberComponentsDeployed);
-            callback(null, 'Deploy complete.');
+            callback(null, 'Deploy complete.\nComponents deployed: ' + result.numberComponentsDeployed);
         }); 
     }, function (err) {
         callback('Error: ' + err);
@@ -96,7 +92,7 @@ function createPackageXml() {
             {version: '37.0'}
         ]
     }
-    let xmlString = xml(xmlObject, {declaration: true});
+    let xmlString = xml(xmlObject, {declaration: true, indent: true});
     console.log(xmlString);
     return new Buffer(xmlString).toString();
 }
@@ -111,7 +107,7 @@ function createMetadataXml() {
             {status: 'Active'}
         ]
     }
-    let xmlString = xml(xmlObject, {declaration: true});
+    let xmlString = xml(xmlObject, {declaration: true, indent: true});
     console.log(xmlString);
     return new Buffer(xmlString).toString();
 }
