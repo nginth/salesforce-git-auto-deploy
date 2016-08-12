@@ -32,7 +32,7 @@ app.post(process.env.GHWH_ENDPOINT, function (req, res) {
     }
 
     if (auth.validateSignature(reqSignature, req.rawBody)) {
-        salesforce.deploy(req.body, function(err, result) {
+        salesforce.deploy(req.body, function (err, result) {
             if (err) return res.status('500').send(err);
             res.send(result);
         });

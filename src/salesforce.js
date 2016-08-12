@@ -14,10 +14,10 @@ var github = new githubApi({
     Promise: Promise
 })
 
-SalesforceDeployer.prototype.deploy = function(ghData, callback) {
+SalesforceDeployer.prototype.deploy = function (ghData, callback) {
     let filenames = getFilenames(ghData.commits, ['added']);
     console.log('filenames: ' + JSON.stringify(filenames));
-    createZip(filenames, ghData.repository, function(err, res) {
+    createZip(filenames, ghData.repository, function (err, res) {
         if (err) return console.log(err);
         deployToSalesforce(callback);
     });
@@ -25,17 +25,17 @@ SalesforceDeployer.prototype.deploy = function(ghData, callback) {
 
 function createZip(filenames, repository, callback) {
     let contents = [];
-    Promise.map(filenames, function(filename) {
+    Promise.map(filenames, function (filename) {
         let repo = repository;        
         return github.repos.getContent({
                 user: repo.owner.name,
                 repo: repo.name,
                 path: filename
             });
-    }).each(function(res) {
+    }).each(function (res) {
         var unencodedData = new Buffer(res.content, 'base64').toString('utf8');
         contents.push({name: res.name, data: unencodedData});
-    }).then(function() {
+    }).then(function () {
         console.log(contents);
         let zip = new JSZip();
         let zipUnpack = zip.folder('unpackaged');
@@ -70,7 +70,7 @@ function deployToSalesforce(callback) {
         let deploy = conn.metadata
         .deploy(zipStream)
         .complete()
-        .then(result => {
+        .then(function (result) {
             console.log(result.done);
             console.log('numberComponentsDeployed: ' + result.numberComponentsDeployed);
             callback(null, 'Deploy complete.\nComponents deployed: ' + result.numberComponentsDeployed);
@@ -119,11 +119,11 @@ function getFilenames(commits, whichFiles) {
     const validFiles = ['added', 'removed', 'modified'];
 
     let filenames = [];
-    whichFiles.forEach(which => {
+    whichFiles.forEach(function (which) {
         if (! (validFiles.indexOf(which) > -1)) {
           throw new RangeError('whichFiles must be one of: ' + validFiles.toString());
         }
-        commits.forEach(commit => {
+        commits.forEach(function (commit) {
             console.log(commit[which]);
             filenames = filenames.concat(commit[which])
         });
