@@ -55,26 +55,25 @@ function deployToSalesforce(callback) {
     });
     const username = process.env.SALESFORCE_USER;
     const password = process.env.SALESFORCE_PASS;
+    const pollInterval = 1000;
+    const pollTimeout = 30000;
     let zipStream = fs.createReadStream('deploy.zip');
-
     conn
     .login(username, password)
     .then(function (data) {
-        conn.metadata
+        let deploy = conn.metadata
         .deploy(zipStream)
-        .complete(function (err, result) {
-            if (err)  {
-                console.log(err);
-                callback(err);
-            }
+        .on('progress', result => console.log('Deploying...'))
+        .on('complete', function(result) {
             console.log(JSON.stringify(result));
             console.log(result.done);
             console.log('numberComponentsDeployed: ' + result.numberComponentsDeployed);
             callback(null, 'Deploy complete.\nComponents deployed: ' + result.numberComponentsDeployed);
-        }); 
-    }, function (err) {
-        callback('Error: ' + err);
-    });
+        })
+        .on('error', err => callback(err))
+        .poll(pollInterval, pollTimeout);
+    })
+    .catch(err => callback(err));
 }
 
 function createPackageXml() {

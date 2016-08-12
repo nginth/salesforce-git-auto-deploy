@@ -11,7 +11,7 @@ app.set('port', (process.env.PORT || 5000));
 app.set('views', path.join(__dirname, 'templates'));
 app.set('view engine', 'pug');
 
-app.use(function (req, _, next) {
+app.use(function (req, ignore, next) {
     req.rawBody = '';
     req.on('data', function (buf) {
         req.rawBody += buf;
@@ -21,7 +21,7 @@ app.use(function (req, _, next) {
 
 app.use(bodyParser.json());
 
-app.get('/', function (_, res) {
+app.get('/', function (ignore, res) {
     res.render('index');
 });
 
