@@ -15,12 +15,18 @@ var github = new githubApi({
 })
 
 SalesforceDeployer.prototype.deploy = function(ghData, callback) {
-    let filenames = parseRequest(ghData.commits);
+    let filenames = getFilenames(ghData.commits, ['added']);
     console.log('filenames: ' + JSON.stringify(filenames));
-    
+    createZip(filenames, ghData.repository, function(err, res) {
+        if (err) return console.log(err);
+        deployToSalesforce(callback);
+    });
+}
+
+function createZip(filenames, repository, callback) {
     let contents = [];
-    Promise.map(filenames.added, function(filename) {
-        let repo = ghData.repository;        
+    Promise.map(filenames, function(filename) {
+        let repo = repository;        
         return github.repos.getContent({
                 user: repo.owner.name,
                 repo: repo.name,
@@ -44,7 +50,7 @@ SalesforceDeployer.prototype.deploy = function(ghData, callback) {
         .generateNodeStream({type: 'nodebuffer'})
         .pipe(fs.createWriteStream('deploy.zip', {defaultEncoding: 'binary'}))
         .on('finish', function () {
-            deployToSalesforce(callback);
+            callback();
         });
     });
 }
@@ -109,18 +115,19 @@ function createMetadataXml() {
     return new Buffer(xmlString).toString();
 }
 
-function parseRequest(commits) {
-    let filenames = {
-        added: [],
-        modified: [],
-        removed: []
-    }
-    let i;
-    for (i = 0; i < commits.length; i += 1) {
-        filenames.added = filenames.added.concat(commits[i].added);
-        filenames.updated = filenames.modified.concat(commits[i].modified);
-        filenames.removed = filenames.removed.concat(commits[i].removed);
-    }
+function getFilenames(commits, whichFiles) {
+    const validFiles = ['added', 'removed', 'modified'];
+
+    let filenames = [];
+    whichFiles.forEach(which => {
+        if (! (validFiles.indexOf(which) > -1)) {
+          throw new RangeError('whichFiles must be one of: ' + validFiles.toString());
+        }
+        commits.forEach(commit => {
+            console.log(commit[which]);
+            filenames = filenames.concat(commit[which])
+        });
+    });
     return filenames;
 }
 
