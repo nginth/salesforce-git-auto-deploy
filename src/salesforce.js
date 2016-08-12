@@ -63,15 +63,13 @@ function deployToSalesforce(callback) {
     .then(function (data) {
         let deploy = conn.metadata
         .deploy(zipStream)
-        .on('progress', result => console.log('Deploying...'))
-        .on('complete', function(result) {
-            console.log(JSON.stringify(result));
+        .complete()
+        .then(result => {
             console.log(result.done);
             console.log('numberComponentsDeployed: ' + result.numberComponentsDeployed);
             callback(null, 'Deploy complete.\nComponents deployed: ' + result.numberComponentsDeployed);
         })
-        .on('error', err => callback(err))
-        .poll(pollInterval, pollTimeout);
+        .catch(err => callback(err));
     })
     .catch(err => callback(err));
 }
