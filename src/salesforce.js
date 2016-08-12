@@ -15,7 +15,7 @@ var github = new githubApi({
 })
 
 SalesforceDeployer.prototype.deploy = function (ghData, callback) {
-    let filenames = getFilenames(ghData.commits, ['added']);
+    let filenames = getFilenames(ghData.commits, ['added', 'modified']);
     console.log('filenames: ' + JSON.stringify(filenames));
     createZip(filenames, ghData.repository, function (err, res) {
         if (err) return console.log(err);
@@ -61,8 +61,6 @@ function deployToSalesforce(callback) {
     });
     const username = process.env.SALESFORCE_USER;
     const password = process.env.SALESFORCE_PASS;
-    const pollInterval = 1000;
-    const pollTimeout = 30000;
     let zipStream = fs.createReadStream('deploy.zip');
     conn
     .login(username, password)
