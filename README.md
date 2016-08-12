@@ -23,9 +23,10 @@ Salesforce attempts to have a native (and proprietary) solution to everything, b
 You'll need to set the following environment variables:
 
 ```
-GHWH_SECRET: <secret>
-SALESFORCE_USER: foo@bar.com
-SALESFORCE_PASS: waycoolpassword
-SALESFORCE_LOGINURL: (https://login.salesforce.com | https://test.salesforce.com) 
+GHWH_SECRET=<secret>
+GHWH_ENDPOINT="/example-endpoint"
+SALESFORCE_USER="foo@bar.com"
+SALESFORCE_PASS="waycoolpassword"
+SALESFORCE_LOGINURL="(https://login.salesforce.com | https://test.salesforce.com)"
 ```
 
