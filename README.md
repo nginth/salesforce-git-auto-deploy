@@ -12,7 +12,7 @@ Salesforce attempts to have a native (and proprietary) solution to everything, b
 - [x] Parse response
 - [x] Get salesforce user/pass from ~~environment~~ ~~yaml config file~~ environment again
 - [ ] Push modified files to salesforce org
-- [ ] Push new files to salesforce org
+- [x] Push new files to salesforce org
 - [ ] Delete deleted files from salesforce org ~~(is this possible?)~~ (yes it is)
 - [ ] Post to a callback url when job finished
 
