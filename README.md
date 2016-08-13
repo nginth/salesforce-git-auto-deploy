@@ -1,22 +1,22 @@
 ### Note:
 This only works with Apex Classes for right now. I suggest only pushing .cls files to your repository as well.
 
-#### What?
+### What?
 Automatically deploy to a certain salesforce org when you push to a repo. Still a big ol work in progress.
 
-#### Why?
+### Why?
 Salesforce attempts to have a native (and proprietary) solution to everything, but they fall short when it comes to version control (as in there's none of it). This makes it really hard to collaborate on projects, and the result is that you run into conflicts way more often than you should. This project is the first step in creating a reasonable git-based workflow that is easy to use and doesn't add unneeded complexity to an already (unintendedly) convoluted workflow. 
 
-#### Is this secure?
+### Is this secure?
 I can make no guarantees about the safety of this app, but I do verify [Github Webhook Secrets](https://developer.github.com/webhooks/securing/), so you can be relatively sure that no malicious payloads will make their way into your Salesforce org unless your secret key is compromised.
 
-#### Features:
+### Features:
 - Push modified files to salesforce org
 - Push new files to salesforce org
 - Delete deleted files from salesforce org 
 - Post to a callback url when job finished
 
-#### Documentation (WIP)
+## Documentation (WIP)
 
 ### Installation
 - Clone this repository.
