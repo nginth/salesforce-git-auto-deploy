@@ -15,7 +15,7 @@ var github = new githubApi({
 })
 
 SalesforceDeployer.prototype.deploy = function (ghData, callback) {
-    let filenames = getFilenames(ghData.commits, ['added', 'modified']);
+    let filenames = parseRequest(ghData.commits);
     console.log('filenames: ' + JSON.stringify(filenames));
     createZip(filenames, ghData.repository, function (err, res) {
         if (err) return console.log(err);
@@ -23,10 +23,10 @@ SalesforceDeployer.prototype.deploy = function (ghData, callback) {
     });
 }
 
-function createZip(filenames, repository, callback) {
+function createZip(filenames, repo, callback) {
     let contents = [];
-    Promise.map(filenames, function (filename) {
-        let repo = repository;        
+    let toDeploy = filenames.added.concat(filenames.modified);
+    Promise.map(toDeploy, function (filename) {
         return github.repos.getContent({
                 user: repo.owner.name,
                 repo: repo.name,
@@ -36,7 +36,6 @@ function createZip(filenames, repository, callback) {
         var unencodedData = new Buffer(res.content, 'base64').toString('utf8');
         contents.push({name: res.name, data: unencodedData});
     }).then(function () {
-        console.log(contents);
         let zip = new JSZip();
         let zipUnpack = zip.folder('unpackaged');
         contents.forEach(function (file) {
@@ -46,6 +45,9 @@ function createZip(filenames, repository, callback) {
             .file(file.name + '-meta.xml', createMetadataXml(file));
         });
         zipUnpack.file('package.xml', createPackageXml());
+        if(filenames.removed) {
+            zipUnpack.file('destructiveChangesPost.xml', createDestructiveChangesXml(filenames.removed));
+        }
         zip
         .generateNodeStream({type: 'nodebuffer'})
         .pipe(fs.createWriteStream('deploy.zip', {defaultEncoding: 'binary'}))
@@ -94,7 +96,31 @@ function createPackageXml() {
         ]
     }
     let xmlString = xml(xmlObject, {declaration: true, indent: true});
-    console.log(xmlString);
+    return new Buffer(xmlString).toString();
+}
+
+function createDestructiveChangesXml(filenames) {
+    let toRemove = [];
+    filenames.forEach(filename => {
+        let split = filename.split('/');
+        let classNameWithExtension = split[split.length - 1];
+        let className = classNameWithExtension.split('.')[0];
+        toRemove.push(className);
+    }); 
+    let xmlObject = {
+        Package: [
+            {_attr:
+                {xmlns: 'http://soap.sforce.com/2006/04/metadata'}
+            },
+            {types:
+                [
+                    {members: toRemove},
+                    {name: 'ApexClass'}
+                ]
+            }
+        ]
+    }
+    let xmlString = xml(xmlObject, {declaration: true, indent: true});
     return new Buffer(xmlString).toString();
 }
 
@@ -109,23 +135,21 @@ function createMetadataXml() {
         ]
     }
     let xmlString = xml(xmlObject, {declaration: true, indent: true});
-    console.log(xmlString);
     return new Buffer(xmlString).toString();
 }
 
-function getFilenames(commits, whichFiles) {
-    const validFiles = ['added', 'removed', 'modified'];
-
-    let filenames = [];
-    whichFiles.forEach(function (which) {
-        if (! (validFiles.indexOf(which) > -1)) {
-          throw new RangeError('whichFiles must be one of: ' + validFiles.toString());
-        }
-        commits.forEach(function (commit) {
-            console.log(commit[which]);
-            filenames = filenames.concat(commit[which])
-        });
-    });
+function parseRequest(commits) {
+    let filenames = {
+        added: [],
+        modified: [],
+        removed: []
+    }
+    let i;
+    for (i = 0; i < commits.length; i += 1) {
+        filenames.added = filenames.added.concat(commits[i].added);
+        filenames.modified = filenames.modified.concat(commits[i].modified);
+        filenames.removed = filenames.removed.concat(commits[i].removed);
+    }
     return filenames;
 }
 
