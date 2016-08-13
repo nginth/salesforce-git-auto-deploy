@@ -2,6 +2,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
+var request = require('request');
 var salesforce = require('./src/salesforce.js');
 var auth = require('./src/auth.js');
 
@@ -33,8 +34,12 @@ app.post(process.env.GHWH_ENDPOINT, function (req, res) {
 
     if (auth.validateSignature(reqSignature, req.rawBody)) {
         salesforce.deploy(req.body, function (err, result) {
-            if (err) return res.status('500').send(err);
-            res.send(result);
+            if (err) { 
+                console.log(err);
+                return res.status('500').send(err);
+            }
+            if (process.env.GHWH_CALLBACK)
+                request.post({url: process.env.GHWH_CALLBACK, formData: result}, (err, res) => console.log(err));
         });
     } else {
         res.status('403').send('Unauthorized');

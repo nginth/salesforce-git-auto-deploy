@@ -71,9 +71,11 @@ function deployToSalesforce(callback) {
         .deploy(zipStream)
         .complete()
         .then(function (result) {
-            console.log(result.done);
-            console.log('numberComponentsDeployed: ' + result.numberComponentsDeployed);
-            callback(null, 'Deploy complete.\nComponents deployed: ' + result.numberComponentsDeployed);
+            console.log('Deploy finished: ' + result.done);
+            console.log('Components deployed: ' + result.numberComponentsDeployed);
+            console.log('Components errors: ' + result.numberComponentErrors);
+            console.log('Total components: ' + result.numberComponentsTotal);
+            callback(null, result);
         })
         .catch(err => callback(err));
     })
