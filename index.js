@@ -38,8 +38,10 @@ app.post(process.env.GHWH_ENDPOINT, function (req, res) {
                 console.log(err);
                 return res.status('500').send(err);
             }
-            if (process.env.GHWH_CALLBACK)
-                request.post({url: process.env.GHWH_CALLBACK, formData: result}, (err, res) => console.log(err));
+            if (process.env.GHWH_CALLBACK) {
+                let formData = (err || res);
+                request.post({url: process.env.GHWH_CALLBACK, formData: formData}, (err, res) => console.log(err));
+            }
         });
     } else {
         res.status('403').send('Unauthorized');
